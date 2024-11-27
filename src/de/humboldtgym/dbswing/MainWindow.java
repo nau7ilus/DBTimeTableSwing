@@ -4,6 +4,8 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 
+import de.humboldtgym.dbswing.View.StationSearch;
+
 public class MainWindow {
 
 	private JFrame frame;
@@ -38,6 +40,11 @@ public class MainWindow {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		StationSearch stationSearchPanel = new StationSearch();
+		
+		frame.add(stationSearchPanel);
+		
 	}
 
 }
