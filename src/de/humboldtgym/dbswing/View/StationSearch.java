@@ -11,7 +11,7 @@ public class StationSearch extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JTextField txtSucheNachEinem;
-
+	
 	public StationSearch() {
 		setBackground(DB_BLUE_COLOR);
 		setLayout(null);
@@ -21,25 +21,25 @@ public class StationSearch extends JPanel {
 		lblHeadline.setBounds(38, 78, 81, 21);
 		add(lblHeadline);
 		
-		JLabel lblNewLabel_1 = new JLabel("Bahnhof auswählen und Informationen zu Mobilität, Ausstattung und Services enthalten");
-		lblNewLabel_1.setHorizontalAlignment(SwingConstants.LEFT);
-		lblNewLabel_1.setVerticalAlignment(SwingConstants.TOP);
-		lblNewLabel_1.setForeground(Color.WHITE);
-		lblNewLabel_1.setBounds(37, 110, 220, 36);
-		add(lblNewLabel_1);
+		JLabel lblActionDescription = new JLabel("Bahnhof auswählen und Informationen zu Mobilität, Ausstattung und Services enthalten");
+		lblActionDescription.setHorizontalAlignment(SwingConstants.LEFT);
+		lblActionDescription.setVerticalAlignment(SwingConstants.TOP);
+		lblActionDescription.setForeground(Color.WHITE);
+		lblActionDescription.setBounds(37, 110, 220, 36);
+		add(lblActionDescription);
 		
-		txtSucheNachEinem = new JTextField();
-		txtSucheNachEinem.setToolTipText("Suche nach einem Bahnhof");
-		txtSucheNachEinem.setBounds(38, 146, 198, 21);
-		add(txtSucheNachEinem);
-		txtSucheNachEinem.setColumns(10);
+		txtSearch = new JTextField();
+		txtSearch.setToolTipText("Suche nach einem Bahnhof");
+		txtSearch.setBounds(38, 146, 198, 21);
+		add(txtSearch);
+		txtSearch.setColumns(20);
 		
-		JLabel lblNewLabel_2 = new JLabel("Wie zum Beispiel Berlin Hauptbahnhof, Düsseldorf Hbf oder Hamburg Hbf. Schleife ist auch ein schöner Bahnhof.");
-		lblNewLabel_2.setHorizontalAlignment(SwingConstants.LEFT);
-		lblNewLabel_2.setVerticalAlignment(SwingConstants.TOP);
-		lblNewLabel_2.setForeground(Color.WHITE);
-		lblNewLabel_2.setBounds(38, 178, 272, 21);
-		add(lblNewLabel_2);
+		JLabel lblSearchHint = new JLabel("Wie zum Beispiel Berlin Hauptbahnhof, Düsseldorf Hbf oder Hamburg Hbf. Schleife ist auch ein schöner Bahnhof.");
+		lblSearchHint.setHorizontalAlignment(SwingConstants.LEFT);
+		lblSearchHint.setVerticalAlignment(SwingConstants.TOP);
+		lblSearchHint.setForeground(Color.WHITE);
+		lblSearchHint.setBounds(38, 178, 272, 21);
+		add(lblSearchHint);
 
 	}
 }
