@@ -12,18 +12,18 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import de.humboldtgym.dbswing.View.StationSearch;
+import de.humboldtgym.dbswing.View.StationSearchFrame;
 
 public class MainWindow {
 
-	private JFrame frame;
+	private JFrame stationSearchFrame;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					MainWindow window = new MainWindow();
-					window.frame.setVisible(true);
+					window.stationSearchFrame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -37,15 +37,7 @@ public class MainWindow {
 
 	private void initialize() {
 		this.usingCustomFonts();
-		
-		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		StationSearch stationSearchPanel = new StationSearch();
-		
-		frame.add(stationSearchPanel);
-		
+		stationSearchFrame = new StationSearchFrame();
 	}
 	
 	private void usingCustomFonts() {
