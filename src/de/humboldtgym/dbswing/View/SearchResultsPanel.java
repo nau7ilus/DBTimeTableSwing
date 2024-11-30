@@ -1,5 +1,7 @@
 package de.humboldtgym.dbswing.View;
 
+import de.humboldtgym.dbswing.Model.Station;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -7,11 +9,9 @@ import static de.humboldtgym.dbswing.Constants.OPEN_TABLE;
 import static de.humboldtgym.dbswing.Constants.SEARCH_RESULTS;
 
 public class SearchResultsPanel extends JPanel {
-    public String[] resultsData;
+    private JList<Station> resultsList;
 
-    public SearchResultsPanel(String[] resultsData) {
-        this.resultsData = resultsData;
-
+    public SearchResultsPanel() {
         setOpaque(false);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -30,7 +30,7 @@ public class SearchResultsPanel extends JPanel {
     }
 
     private void addResultsList() {
-        JList<String> resultsList = new JList<>(this.resultsData);
+        resultsList = new JList<>(new DefaultListModel<>());
         resultsList.setFont(new Font("DIN-D", Font.PLAIN, 20));
         resultsList.setFixedCellWidth(getWidth());
         resultsList.setLayoutOrientation(JList.VERTICAL);
@@ -54,6 +54,10 @@ public class SearchResultsPanel extends JPanel {
 
     private void addMarginBottom(int height) {
         add(Box.createVerticalStrut(height));
+    }
+
+    public JList<Station> getResultsList() {
+        return this.resultsList;
     }
 
 }

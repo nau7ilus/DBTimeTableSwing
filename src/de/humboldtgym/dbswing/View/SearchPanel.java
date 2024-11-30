@@ -9,6 +9,8 @@ import java.awt.*;
 import static de.humboldtgym.dbswing.Constants.*;
 
 public class SearchPanel extends JPanel {
+    private FancyTextField searchField;
+
     public SearchPanel() {
         setOpaque(false);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -40,7 +42,7 @@ public class SearchPanel extends JPanel {
 
     private void addSearchField() {
         Icon searchIcon = new ImageIcon("resources/images/search.png");
-        FancyTextField searchField = new FancyTextField(10, SEARCH_INPUT_PLACEHOLDER, searchIcon);
+        searchField = new FancyTextField(10, SEARCH_INPUT_PLACEHOLDER, searchIcon);
 
         searchField.setAlignmentX(Component.LEFT_ALIGNMENT);
         searchField.setFont(new Font("DIN-D", Font.PLAIN, 16));
@@ -64,5 +66,9 @@ public class SearchPanel extends JPanel {
 
     private void addMarginBottom(int height) {
         add(Box.createVerticalStrut(height));
+    }
+
+    public FancyTextField getSearchInput() {
+        return this.searchField;
     }
 }
