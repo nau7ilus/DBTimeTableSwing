@@ -1,8 +1,10 @@
 package de.humboldtgym.dbswing;
 
 import de.humboldtgym.dbswing.Controller.SearchController;
+import de.humboldtgym.dbswing.Model.Station;
 import de.humboldtgym.dbswing.Model.StationModel;
 import de.humboldtgym.dbswing.View.SearchView;
+import de.humboldtgym.dbswing.View.TimetableView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,8 +13,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-public class MainWindow {
+public class MainWindow implements WindowChangeListener{
 
+    private TimetableView timetableView;
     private SearchView searchView;
 
     public MainWindow() {
@@ -32,10 +35,17 @@ public class MainWindow {
 
     private void initialize() {
         this.usingCustomFonts();
+
         searchView = new SearchView();
         StationModel stationModel = new StationModel();
-        new SearchController(stationModel, searchView);
+        SearchController searchController = new SearchController(stationModel, searchView);
+        searchController.setWindowChangeListener(this);
+    }
 
+    private void openTimetableWindow(Station station) {
+        searchView.setVisible(false);
+        timetableView = new TimetableView(station);
+        timetableView.setVisible(true);
     }
 
     private void usingCustomFonts() {
@@ -56,4 +66,9 @@ public class MainWindow {
         }
     }
 
+    @Override
+    public void onWindowChangeRequested(Station station) {
+        System.out.println("Changing to window: " + station);
+        openTimetableWindow(station);
+    }
 }
