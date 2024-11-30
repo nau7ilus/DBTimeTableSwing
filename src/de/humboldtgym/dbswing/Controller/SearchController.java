@@ -17,9 +17,7 @@ public class SearchController {
     private WindowChangeListener windowChangeListener;
     private final StationModel model;
     private final SearchView view;
-
-    private final AtomicInteger currentToken = new AtomicInteger(0);
-
+    
     public SearchController(StationModel model, SearchView view) {
         this.model = model;
         this.view = view;
