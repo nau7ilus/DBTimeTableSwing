@@ -1,5 +1,6 @@
 package de.humboldtgym.dbswing.Model;
 
+import de.humboldtgym.dbswing.RESTHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -38,37 +39,17 @@ public class StationModel {
 
     public void loadStations(String query) {
         int requestToken = currentRequestToken.incrementAndGet();
-        new Thread(() -> {
-            try {
-                //noinspection CharsetObjectCanBeUsed
-                String requestEndpoint = API_LOCATIONS + URLEncoder.encode(query, StandardCharsets.UTF_8.toString());
-                URL url = new URL(requestEndpoint);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
-                connection.setRequestProperty("Accept", "application/json");
+        String requestEndpoint = API_LOCATIONS + RESTHelper.encodeQuery(query);
 
-                if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-                        StringBuilder response = new StringBuilder();
-                        String line;
-                        while ((line = reader.readLine()) != null) {
-                            response.append(line);
-                        }
-
-                        if (requestToken == currentRequestToken.get()) {
-                            List<Station> fetchedStations = parseStations(response.toString());
-                            setStations(fetchedStations);
-                        }
-                    }
-                } else {
-                    System.err.println("API Error: " + connection.getResponseCode());
-                }
-
-                connection.disconnect();
-            } catch (Exception e) {
-                e.printStackTrace();
+        RESTHelper.get(requestEndpoint).thenAccept(response -> {
+            if (requestToken == currentRequestToken.get()) {
+                List<Station> fetchedStations = parseStations(response);
+                setStations(fetchedStations);
             }
-        }).start();
+        }).exceptionally(ex -> {
+            ex.printStackTrace();
+            return null;
+        });
     }
 
     private List<Station> parseStations(String jsonResponse) {
