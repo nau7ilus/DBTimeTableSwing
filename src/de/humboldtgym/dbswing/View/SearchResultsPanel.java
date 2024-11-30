@@ -10,6 +10,7 @@ import static de.humboldtgym.dbswing.Constants.SEARCH_RESULTS;
 
 public class SearchResultsPanel extends JPanel {
     private JList<Station> resultsList;
+    private JButton submitButton;
 
     public SearchResultsPanel() {
         setOpaque(false);
@@ -44,11 +45,11 @@ public class SearchResultsPanel extends JPanel {
     }
 
     private void addSubmitButton() {
-        JButton openButton = new JButton(OPEN_TABLE);
-        openButton.setFont(new Font("DIN-D", Font.PLAIN, 20));
-        openButton.setAlignmentX(Component.LEFT_ALIGNMENT);
-        openButton.setMinimumSize(new Dimension(400, 40));
-        add(openButton);
+        submitButton = new JButton(OPEN_TABLE);
+        submitButton.setFont(new Font("DIN-D", Font.PLAIN, 20));
+        submitButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        submitButton.setMinimumSize(new Dimension(400, 40));
+        add(submitButton);
         add(Box.createVerticalGlue());
     }
 
@@ -60,4 +61,7 @@ public class SearchResultsPanel extends JPanel {
         return this.resultsList;
     }
 
+    public JButton getSubmitButton(){
+        return this.submitButton;
+    }
 }
