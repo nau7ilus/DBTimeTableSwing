@@ -12,17 +12,19 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import de.humboldtgym.dbswing.View.StationSearchFrame;
+import de.humboldtgym.dbswing.Controller.SearchController;
+import de.humboldtgym.dbswing.Model.StationModel;
+import de.humboldtgym.dbswing.View.SearchView;
 
 public class MainWindow {
 
-	private JFrame stationSearchFrame;
+	private SearchView searchView;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(() -> {
             try {
                 MainWindow window = new MainWindow();
-                window.stationSearchFrame.setVisible(true);
+                window.searchView.setVisible(true);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -35,7 +37,10 @@ public class MainWindow {
 
 	private void initialize() {
 		this.usingCustomFonts();
-		stationSearchFrame = new StationSearchFrame();
+		searchView = new SearchView();
+		StationModel stationModel = new StationModel();
+		new SearchController(stationModel, searchView);
+
 	}
 	
 	private void usingCustomFonts() {
