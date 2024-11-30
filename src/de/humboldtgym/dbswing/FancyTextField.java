@@ -25,18 +25,18 @@ public class FancyTextField extends JTextField {
             @Override
             public void focusGained(FocusEvent e) {
                 if (showingPlaceholder) {
+                    showingPlaceholder = false;
                     setForeground(Color.black);
                     setText("");
-                    showingPlaceholder = false;
                 }
             }
 
             @Override
             public void focusLost(FocusEvent e) {
                 if (getText().isEmpty()) {
+                    showingPlaceholder = true;
                     setForeground(Color.gray);
                     setText(placeholder);
-                    showingPlaceholder = true;
                 }
             }
         });
@@ -70,5 +70,14 @@ public class FancyTextField extends JTextField {
     @Override
     public void setBorder(Border border) {
         super.setBorder(BorderFactory.createEmptyBorder(10, ICON_CONTAINER_WIDTH, 10, 10));
+    }
+
+    @Override
+    public String getText() {
+        return this.showingPlaceholder ? "" : super.getText();
+    }
+
+    public boolean getShowingPlaceholder() {
+        return this.showingPlaceholder;
     }
 }
