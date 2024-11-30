@@ -6,11 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StationModel {
-    private List<Station> stations = new ArrayList<>();
+    private final List<Station> stations = new ArrayList<>();
     private final List<ChangeListener> listeners = new ArrayList<>();
 
-    public void setStations(List<Station> stations) {
-        this.stations = stations;
+    public void setStations(List<Station> newStations) {
+        stations.clear();
+        stations.addAll(newStations);
         notifyListeners();
     }
 
@@ -28,5 +29,4 @@ public class StationModel {
             listener.stateChanged(event);
         }
     }
-
 }
