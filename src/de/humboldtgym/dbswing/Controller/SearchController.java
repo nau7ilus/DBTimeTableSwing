@@ -9,10 +9,13 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SearchController {
     private final StationModel model;
     private final SearchView view;
+
+    private final AtomicInteger currentToken = new AtomicInteger(0);
 
     public SearchController(StationModel model, SearchView view) {
         this.model = model;
@@ -40,7 +43,7 @@ public class SearchController {
                 if (!query.isEmpty() && !showingPlaceholder) {
                     fetchStations(query);
                 } else {
-                    model.setStations(Arrays.asList());
+                    model.setStations(List.of());
                 }
             }
         });
@@ -49,6 +52,8 @@ public class SearchController {
     }
 
     private void fetchStations(String query) {
+        int token = currentToken.incrementAndGet();
+
         SwingWorker<List<Station>, Void> worker = new SwingWorker<List<Station>, Void>() {
             @Override
             protected List<Station> doInBackground() throws Exception {
@@ -64,7 +69,12 @@ public class SearchController {
             @Override
             protected void done() {
                 try {
-                    model.setStations(get());
+                    if (token == currentToken.get()) {
+                        List<Station> results = get();
+                        model.setStations(results);
+                    } else {
+                        System.out.println("Previous request " + query + " was ignored.");
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
