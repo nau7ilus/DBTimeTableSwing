@@ -8,7 +8,6 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class SearchController {
@@ -43,7 +42,8 @@ public class SearchController {
                 if (!query.isEmpty() && !showingPlaceholder) {
                     fetchStations(query);
                 } else {
-                    model.setStations(List.of());
+                    //noinspection ArraysAsListWithZeroOrOneArgument
+                    model.setStations(Arrays.asList());
                 }
             }
         });
@@ -52,36 +52,9 @@ public class SearchController {
     }
 
     private void fetchStations(String query) {
-        int token = currentToken.incrementAndGet();
-
-        SwingWorker<List<Station>, Void> worker = new SwingWorker<List<Station>, Void>() {
-            @Override
-            protected List<Station> doInBackground() throws Exception {
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                return Arrays.asList(new Station("1", query + "1"), new Station("2", query + "2"), new Station("3", query + "2"));
-            }
-
-            @Override
-            protected void done() {
-                try {
-                    if (token == currentToken.get()) {
-                        List<Station> results = get();
-                        model.setStations(results);
-                    } else {
-                        System.out.println("Previous request " + query + " was ignored.");
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-
-        worker.execute();
+        new Thread(() -> {
+            model.loadStations(query);
+        }).start();
     }
 
     private void updateView() {
@@ -91,6 +64,4 @@ public class SearchController {
             listModel.addElement(station);
         }
     }
-
-
 }
