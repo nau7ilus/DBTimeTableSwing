@@ -13,7 +13,7 @@ public class SearchView extends JFrame {
     private final SearchResultsPanel resultsPanel = new SearchResultsPanel();
 
     public SearchView() {
-        setBounds(0, 0, 900, 350);
+        setBounds(100, 100, 900, 350);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("Bahnhofstafel — Stationensuche");
         setResizable(false);
