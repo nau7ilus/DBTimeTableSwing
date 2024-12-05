@@ -21,7 +21,7 @@ public class TimetableView extends JFrame {
     public TimetableView(Station station) {
         this.station = station;
 
-        setBounds(100, 100, 1500, 844);
+        setBounds(100, 100, 1000, 844);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("Bahnhofstafel — " + station.getName());
 
