@@ -1,8 +1,10 @@
 package de.humboldtgym.dbswing;
 
 import de.humboldtgym.dbswing.Controller.SearchController;
+import de.humboldtgym.dbswing.Controller.TimetableController;
 import de.humboldtgym.dbswing.Model.Station;
 import de.humboldtgym.dbswing.Model.StationModel;
+import de.humboldtgym.dbswing.Model.TimetableModel;
 import de.humboldtgym.dbswing.View.SearchView;
 import de.humboldtgym.dbswing.View.TimetableView;
 
@@ -26,7 +28,9 @@ public class MainWindow implements WindowChangeListener{
         EventQueue.invokeLater(() -> {
             try {
                 MainWindow window = new MainWindow();
-                window.searchView.setVisible(true);
+                window.openTimetableWindow(new Station("8011160", "Berlin Hbf"));
+
+                 //window.searchView.setVisible(true);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -36,15 +40,19 @@ public class MainWindow implements WindowChangeListener{
     private void initialize() {
         this.usingCustomFonts();
 
-        searchView = new SearchView();
-        StationModel stationModel = new StationModel();
+         searchView = new SearchView();
+         StationModel stationModel = new StationModel();
         SearchController searchController = new SearchController(stationModel, searchView);
         searchController.setWindowChangeListener(this);
+
     }
 
-    private void openTimetableWindow(Station station) {
-        searchView.setVisible(false);
+    public void openTimetableWindow(Station station) {
+       // searchView.setVisible(false);
         timetableView = new TimetableView(station);
+        TimetableModel timetableModel = new TimetableModel(station);
+        TimetableController timetableController = new TimetableController(timetableModel, timetableView);
+        timetableModel.loadTrips();
         timetableView.setVisible(true);
     }
 

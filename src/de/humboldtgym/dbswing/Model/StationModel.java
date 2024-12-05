@@ -60,9 +60,7 @@ public class StationModel {
             JSONObject stationObj = jsonArray.getJSONObject(i);
             String type = stationObj.getString("type");
             if (!type.equals("station")) continue;
-            String id = stationObj.getString("id");
-            String name = stationObj.getString("name");
-            stationList.add(new Station(id, name));
+            stationList.add(Station.parseJSONObject(stationObj));
         }
 
         return stationList;

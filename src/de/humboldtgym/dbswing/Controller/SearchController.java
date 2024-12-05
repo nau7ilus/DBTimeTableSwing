@@ -11,13 +11,12 @@ import javax.swing.event.DocumentListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class SearchController {
     private WindowChangeListener windowChangeListener;
     private final StationModel model;
     private final SearchView view;
-    
+
     public SearchController(StationModel model, SearchView view) {
         this.model = model;
         this.view = view;
