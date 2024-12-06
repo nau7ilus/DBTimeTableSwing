@@ -24,21 +24,27 @@ public class Trip {
     }
 
     public static Trip parseJSONObject(JSONObject jsonObject) {
-        String id = jsonObject.getString("when");
-        Trip trip = new Trip(id);
+        try {
+            String id = jsonObject.getString("when");
+            Trip trip = new Trip(id);
 
-        String whenRaw = jsonObject.optString("when", "");
-        String whenPlannedRaw = jsonObject.optString("plannedWhen", "");
-        trip.when = Date.from(Instant.parse(whenRaw));
-        trip.whenPlanned = Date.from(Instant.parse(whenPlannedRaw));
-        trip.delay = jsonObject.optInt("delay", 0);
-        trip.platform = jsonObject.optString("platform", "");
-        trip.plannedPlatform = jsonObject.optString("plannedPlatform", "");
-        trip.destination = Station.parseJSONObject(jsonObject.getJSONObject("destination"));
-        trip.cancelled = jsonObject.optBoolean("cancelled", false);
-        trip.line = Line.parseJSONObject(jsonObject.getJSONObject("line"));
+            String whenRaw = jsonObject.optString("when", "");
+            String whenPlannedRaw = jsonObject.optString("plannedWhen", "");
+            trip.when = Date.from(Instant.parse(whenRaw));
+            trip.whenPlanned = Date.from(Instant.parse(whenPlannedRaw));
+            trip.delay = jsonObject.optInt("delay", 0);
+            trip.platform = jsonObject.optString("platform", "");
+            trip.plannedPlatform = jsonObject.optString("plannedPlatform", "");
+            trip.destination = Station.parseJSONObject(jsonObject.getJSONObject("destination"));
+            trip.cancelled = jsonObject.optBoolean("cancelled", false);
+            trip.line = Line.parseJSONObject(jsonObject.getJSONObject("line"));
 
-        return trip;
+            return trip;
+        } catch (Exception err) {
+            System.err.println("Couldn't parse the trip object");
+            err.printStackTrace();
+            return null;
+        }
     }
 
     public String getId() {
