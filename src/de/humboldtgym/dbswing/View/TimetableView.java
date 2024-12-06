@@ -17,6 +17,7 @@ public class TimetableView extends JFrame {
     public JButton retryRetrieve;
     private JPanel tripsPanel;
     private final JPanel containerPanel;
+    private JScrollPane scrollPane;
 
     public TimetableView(Station station) {
         this.station = station;
@@ -42,12 +43,17 @@ public class TimetableView extends JFrame {
         retryRetrieve = new JButton("Retry");
         tripsPanel.add(retryRetrieve);
 
-        containerPanel.add(tripsPanel);
+        scrollPane = new JScrollPane(tripsPanel,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+        scrollPane.setBorder(null);
+
+        containerPanel.add(scrollPane);
     }
 
     public void updateTrips(List<Trip> newTrips) {
-        containerPanel.remove(tripsPanel);
-
         tripsPanel = new ContentWrapperPanel(BoxLayout.Y_AXIS,BorderLayout.NORTH);
         tripsPanel.setOpaque(false);
 
@@ -55,8 +61,8 @@ public class TimetableView extends JFrame {
             tripsPanel.add(new TripTableEntry(trip));
         }
 
-        containerPanel.add(tripsPanel);
-        containerPanel.revalidate();
-        containerPanel.repaint();
+        scrollPane.setViewportView(tripsPanel);
+        scrollPane.revalidate();
+        scrollPane.repaint();
     }
 }
