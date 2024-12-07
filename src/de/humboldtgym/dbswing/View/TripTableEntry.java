@@ -19,7 +19,7 @@ public class TripTableEntry extends JPanel {
         setLayout(new GridBagLayout());
 
         gbc.fill = GridBagConstraints.BOTH;
-        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.insets = new Insets(15, 10, 15, 10);
 
         addTimeAndTrain();
         addViaDest();
