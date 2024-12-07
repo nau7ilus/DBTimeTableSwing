@@ -10,6 +10,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static de.humboldtgym.dbswing.Constants.*;
 
@@ -36,27 +37,42 @@ private final List<ChangeListener> listeners = new ArrayList<>();
 
     public void loadTrips() {
         String requestEndpoint = API_TRIPS + RESTHelper.encodeQuery(this.currentStation.getId()) + API_TRIPS_QUERY;
-        RESTHelper.get(requestEndpoint).thenAccept( response -> {
+
+        RESTHelper.get(requestEndpoint).thenAccept(response -> {
             List<Trip> trips = this.parseTrips(response);
+
+            List<CompletableFuture<Void>> futures = new ArrayList<>();
+
             for (Trip trip : trips) {
-                this.loadTripInfo(trip);
+                futures.add(this.loadTripInfo(trip));
             }
-            setTrips(trips);
+
+            CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
+                    .thenRun(() -> {
+                        setTrips(trips);
+                    })
+                    .exceptionally(ex -> {
+                        System.err.println("Fehler beim Abruf der Abfahrten: " + ex);
+                        ex.printStackTrace();
+                        return null;
+                    });
         }).exceptionally(ex -> {
-            System.err.println("Fehler beim Abruf der Abfahrten" + ex);
+            System.err.println("Fehler beim Abruf der Abfahrten: " + ex);
             ex.printStackTrace();
             return null;
         });
     }
 
-    public void loadTripInfo(Trip trip) {
+    public CompletableFuture<Void> loadTripInfo(Trip trip) {
         String encodedId = RESTHelper.encodeQuery(trip.getId());
         String encodedLineName = RESTHelper.encodeQuery(trip.getLine().getName());
         String requestEndpoint = API_BASE_URL + "/trips/" + encodedId + "?language=de&lineName=" + encodedLineName;
-        RESTHelper.get(requestEndpoint).thenAccept( response -> {
+
+        return RESTHelper.get(requestEndpoint).thenAccept(response -> {
             List<Station> stopovers = new ArrayList<>();
             JSONObject responseObj = new JSONObject(response);
             JSONArray stopoversJSONArray = responseObj.getJSONArray("stopovers");
+
             for (int i = 0; i < stopoversJSONArray.length(); i++) {
                 JSONObject stopoverObject = stopoversJSONArray.getJSONObject(i);
 
@@ -65,7 +81,7 @@ private final List<ChangeListener> listeners = new ArrayList<>();
 
                 String departureRaw = stopoverObject.optString("departure", "");
                 if (!departureRaw.isEmpty()) {
-                    Date departure =  Date.from(Instant.parse(departureRaw));
+                    Date departure = Date.from(Instant.parse(departureRaw));
                     station.setDeparture(departure);
                 }
 
