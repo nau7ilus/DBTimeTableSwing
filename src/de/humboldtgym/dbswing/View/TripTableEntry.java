@@ -5,6 +5,7 @@ import de.humboldtgym.dbswing.Model.Line;
 import de.humboldtgym.dbswing.Model.Trip;
 
 import javax.swing.*;
+import javax.swing.border.MatteBorder;
 import java.awt.*;
 
 import static de.humboldtgym.dbswing.Constants.DB_BLUE_PRIMARY_COLOR;
@@ -27,6 +28,9 @@ public class TripTableEntry extends JPanel {
 
         gbc.weightx = 0.3;
         gbc.gridx = 3;
+        add(new JLabel("Column 4 (1fr)"), gbc);
+
+        setBorder(new MatteBorder(0, 0, 1, 0, new Color(0x99AABB)));
     }
 
     private void addTimeAndTrain() {
@@ -70,7 +74,6 @@ public class TripTableEntry extends JPanel {
 
     private void addViaDest() {
         gbc.gridx = 1;
-        gbc.weightx = 2;
 
         ContentWrapperPanel panel = new ContentWrapperPanel(BoxLayout.Y_AXIS, BorderLayout.SOUTH);
         panel.setPreferredSize(new Dimension(400, 60));
@@ -126,7 +129,6 @@ public class TripTableEntry extends JPanel {
             panel.add(changedPlatform);
         }
 
-        add(panel, gbc);
         containerPanel.add(panel);
 
         add(containerPanel, gbc);
