@@ -6,8 +6,6 @@ import de.humboldtgym.dbswing.Model.Trip;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 
 import static de.humboldtgym.dbswing.Constants.DB_BLUE_PRIMARY_COLOR;
@@ -45,7 +43,7 @@ public class TimetableView extends JFrame {
 
         scrollPane = new JScrollPane(tripsPanel,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setOpaque(false);
         scrollPane.getViewport().setOpaque(false);
         scrollPane.setBorder(null);
