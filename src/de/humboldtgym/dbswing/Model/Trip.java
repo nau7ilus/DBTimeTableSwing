@@ -6,17 +6,18 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Trip {
     private final String id;
-    private Date when;
-    private Date whenPlanned;
+    private Date when = null;
+    private Date whenPlanned = null;
     private int delay;
     private String platform;
     private String plannedPlatform;
     private Station destination;
     private boolean cancelled;
-    private List<Station> via;
+    private List<Station> stopovers;
     private Line line;
 
     public Trip(String id) {
@@ -24,27 +25,40 @@ public class Trip {
     }
 
     public static Trip parseJSONObject(JSONObject jsonObject) {
-        try {
-            String id = jsonObject.getString("when");
-            Trip trip = new Trip(id);
+        String id = jsonObject.getString("tripId");
+        Trip trip = new Trip(id);
 
-            String whenRaw = jsonObject.optString("when", "");
-            String whenPlannedRaw = jsonObject.optString("plannedWhen", "");
-            trip.when = Date.from(Instant.parse(whenRaw));
-            trip.whenPlanned = Date.from(Instant.parse(whenPlannedRaw));
-            trip.delay = jsonObject.optInt("delay", 0);
-            trip.platform = jsonObject.optString("platform", "");
-            trip.plannedPlatform = jsonObject.optString("plannedPlatform", "");
-            trip.destination = Station.parseJSONObject(jsonObject.getJSONObject("destination"));
-            trip.cancelled = jsonObject.optBoolean("cancelled", false);
-            trip.line = Line.parseJSONObject(jsonObject.getJSONObject("line"));
+        String whenRaw = jsonObject.optString("when", "");
+        String whenPlannedRaw = jsonObject.optString("plannedWhen", "");
+        trip.when = !whenRaw.isEmpty() ? Date.from(Instant.parse(whenRaw)) : null;
+        trip.whenPlanned = !whenPlannedRaw.isEmpty() ? Date.from(Instant.parse(whenPlannedRaw)) : null;
+        trip.delay = jsonObject.optInt("delay", 0);
+        trip.platform = jsonObject.optString("platform", "");
+        trip.plannedPlatform = jsonObject.optString("plannedPlatform", "");
+        trip.destination = Station.parseJSONObject(jsonObject.getJSONObject("destination"));
+        trip.cancelled = jsonObject.optBoolean("cancelled", false);
+        trip.line = Line.parseJSONObject(jsonObject.getJSONObject("line"));
 
-            return trip;
-        } catch (Exception err) {
-            System.err.println("Couldn't parse the trip object");
-            err.printStackTrace();
-            return null;
-        }
+        return trip;
+    }
+
+    public List<Station> getStopovers() {
+        return this.stopovers;
+    }
+
+    public void setStopovers(List<Station> stopovers) {
+        this.stopovers = stopovers;
+    }
+
+    public String getRelevantStopoverNames() {
+        if (stopovers == null) return "123";
+//       List<Station> filteredStopovers = this.stopovers.stream().filter((so) -> {
+//            boolean isEligibleProduct = so.hasNationalExpress() || so.hasRegionalExpress();
+//            // TODO: Ignore all station before current
+//            return isEligibleProduct; // && index > currentStationIndex;
+//        }).toList();
+
+        return stopovers.stream().map(Station::getName).collect(Collectors.joining(" — "));
     }
 
     public String getId() {
@@ -61,12 +75,17 @@ public class Trip {
 
     public String getFormattedWhenPlanned() {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        if (whenPlanned.toString().isEmpty()) return null;
         return sdf.format(this.whenPlanned);
     }
 
     public String getFormattedWhen() {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        return sdf.format(this.when);
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+            return sdf.format(this.when);
+        } catch(Exception ex) {
+            return "";
+        }
     }
 
     public int getDelay() {

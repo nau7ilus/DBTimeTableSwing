@@ -76,7 +76,7 @@ public class TripTableEntry extends JPanel {
         ContentWrapperPanel panel = new ContentWrapperPanel(BoxLayout.Y_AXIS, BorderLayout.SOUTH);
         panel.setOpaque(false);
 
-        JLabel viaLabel = new JLabel("Berlin Hbf - Noch was balbla");
+        JLabel viaLabel = new JLabel(trip.getRelevantStopoverNames());
         viaLabel.setForeground(Color.white);
         viaLabel.setFont(new Font("D-DIN", Font.PLAIN, 16));
         viaLabel.setAlignmentX(Component.LEFT_ALIGNMENT);

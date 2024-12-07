@@ -6,11 +6,12 @@ import org.json.JSONObject;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import static de.humboldtgym.dbswing.Constants.API_TRIPS;
-import static de.humboldtgym.dbswing.Constants.API_TRIPS_QUERY;
+import static de.humboldtgym.dbswing.Constants.*;
 
 public class TimetableModel {
     private final List<Trip> trips = new ArrayList<>();
@@ -37,7 +38,40 @@ private final List<ChangeListener> listeners = new ArrayList<>();
         String requestEndpoint = API_TRIPS + RESTHelper.encodeQuery(this.currentStation.getId()) + API_TRIPS_QUERY;
         RESTHelper.get(requestEndpoint).thenAccept( response -> {
             List<Trip> trips = this.parseTrips(response);
+            for (Trip trip : trips) {
+                this.loadTripInfo(trip);
+            }
             setTrips(trips);
+        }).exceptionally(ex -> {
+            System.err.println("Fehler beim Abruf der Abfahrten" + ex);
+            ex.printStackTrace();
+            return null;
+        });
+    }
+
+    public void loadTripInfo(Trip trip) {
+        String encodedId = RESTHelper.encodeQuery(trip.getId());
+        String encodedLineName = RESTHelper.encodeQuery(trip.getLine().getName());
+        String requestEndpoint = API_BASE_URL + "/trips/" + encodedId + "?language=de&lineName=" + encodedLineName;
+        RESTHelper.get(requestEndpoint).thenAccept( response -> {
+            List<Station> stopovers = new ArrayList<>();
+            JSONObject responseObj = new JSONObject(response);
+            JSONArray stopoversJSONArray = responseObj.getJSONArray("stopovers");
+            for (int i = 0; i < stopoversJSONArray.length(); i++) {
+                JSONObject stopoverObject = stopoversJSONArray.getJSONObject(i);
+
+                JSONObject stationRaw = stopoverObject.getJSONObject("stop");
+                Station station = Station.parseJSONObject(stationRaw);
+
+                String departureRaw = stopoverObject.optString("departure", "");
+                if (!departureRaw.isEmpty()) {
+                    Date departure =  Date.from(Instant.parse(departureRaw));
+                    station.setDeparture(departure);
+                }
+
+                stopovers.add(station);
+            }
+            trip.setStopovers(stopovers);
         }).exceptionally(ex -> {
             ex.printStackTrace();
             return null;
