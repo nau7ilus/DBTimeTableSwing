@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-public class MainWindow implements WindowChangeListener{
+public class MainWindow implements WindowChangeListener {
 
     private TimetableView timetableView;
     private SearchView searchView;
@@ -28,9 +28,7 @@ public class MainWindow implements WindowChangeListener{
         EventQueue.invokeLater(() -> {
             try {
                 MainWindow window = new MainWindow();
-                window.openTimetableWindow(new Station("8011160", "Berlin Hbf"));
-
-                 //window.searchView.setVisible(true);
+                window.searchView.setVisible(true);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -39,19 +37,18 @@ public class MainWindow implements WindowChangeListener{
 
     private void initialize() {
         this.usingCustomFonts();
-
-         searchView = new SearchView();
-         StationModel stationModel = new StationModel();
+        searchView = new SearchView();
+        StationModel stationModel = new StationModel();
         SearchController searchController = new SearchController(stationModel, searchView);
         searchController.setWindowChangeListener(this);
 
     }
 
     public void openTimetableWindow(Station station) {
-       // searchView.setVisible(false);
+        searchView.setVisible(false);
         timetableView = new TimetableView(station);
         TimetableModel timetableModel = new TimetableModel(station);
-        TimetableController timetableController = new TimetableController(timetableModel, timetableView);
+        new TimetableController(timetableModel, timetableView);
         timetableModel.loadTrips();
         timetableView.setVisible(true);
     }
