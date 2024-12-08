@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="DBTimeTableSwing:jar">
+    <output-path>$PROJECT_DIR$/classes/artifacts/DBTimeTableSwing_jar</output-path>
+    <root id="archive" name="DBTimeTableSwing.jar">
+      <element id="module-output" name="DBTimeTableSwing" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/json-20240303.jar" path-in-jar="/" />
+      <element id="library" level="project" name="json" />
+      <element id="dir-copy" path="$PROJECT_DIR$/resources" />
+    </root>
+  </artifact>
+</component>

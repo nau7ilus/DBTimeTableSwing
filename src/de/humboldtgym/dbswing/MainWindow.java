@@ -12,8 +12,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class MainWindow implements WindowChangeListener {
 
@@ -57,12 +60,21 @@ public class MainWindow implements WindowChangeListener {
         GraphicsEnvironment GE = GraphicsEnvironment.getLocalGraphicsEnvironment();
         List<String> AVAILABLE_FONT_FAMILY_NAMES = Arrays.asList(GE.getAvailableFontFamilyNames());
         try {
-            List<File> LIST = Arrays.asList(new File("resources/fonts/D-DIN.otf"), new File("resources/fonts/D-DIN-Bold.otf"), new File("resources/fonts/D-DIN-Italic.otf"));
-            for (File LIST_ITEM : LIST) {
-                if (LIST_ITEM.exists()) {
-                    Font FONT = Font.createFont(Font.TRUETYPE_FONT, LIST_ITEM);
-                    if (!AVAILABLE_FONT_FAMILY_NAMES.contains(FONT.getFontName())) {
-                        GE.registerFont(FONT);
+            List<String> fontPaths = Arrays.asList(
+                    "/fonts/D-DIN.otf",
+                    "/fonts/D-DIN-Bold.otf",
+                    "/fonts/D-DIN-Italic.otf"
+            );
+
+            for (String fontPath : fontPaths) {
+                try (InputStream fontStream = getClass().getResourceAsStream(fontPath)) {
+                    if (fontStream != null) {
+                        Font FONT = Font.createFont(Font.TRUETYPE_FONT, fontStream);
+                        if (!AVAILABLE_FONT_FAMILY_NAMES.contains(FONT.getFontName())) {
+                            GE.registerFont(FONT);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Font file not found: " + fontPath);
                     }
                 }
             }
@@ -70,6 +82,7 @@ public class MainWindow implements WindowChangeListener {
             JOptionPane.showMessageDialog(null, exception.getMessage());
         }
     }
+
 
     @Override
     public void onWindowChangeRequested(Station station) {

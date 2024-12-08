@@ -5,6 +5,7 @@ import de.humboldtgym.dbswing.WordWrapJLabel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
 
 import static de.humboldtgym.dbswing.Constants.*;
 
@@ -40,8 +41,23 @@ public class SearchPanel extends JPanel {
         addMarginBottom(30);
     }
 
+    private Icon getSearchIcon() {
+        Icon searchIcon = null;
+        try {
+            URL imageUrl = getClass().getResource("/images/search.png");
+            if (imageUrl != null) {
+                searchIcon = new ImageIcon(imageUrl);
+            } else {
+                JOptionPane.showMessageDialog(null, "Image not found: /images/search.png");
+            }
+        } catch (Exception exception) {
+            JOptionPane.showMessageDialog(null, exception.getMessage());
+        }
+        return searchIcon;
+    }
+
     private void addSearchField() {
-        Icon searchIcon = new ImageIcon("resources/images/search.png");
+        Icon searchIcon = getSearchIcon();
         searchField = new FancyTextField(10, SEARCH_INPUT_PLACEHOLDER, searchIcon);
 
         searchField.setAlignmentX(Component.LEFT_ALIGNMENT);
