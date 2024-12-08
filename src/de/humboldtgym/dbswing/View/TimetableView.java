@@ -11,48 +11,49 @@ import java.util.List;
 import static de.humboldtgym.dbswing.Constants.DB_BLUE_PRIMARY_COLOR;
 
 public class TimetableView extends JFrame {
-    private final Station station;
+    private final JScrollPane scrollPane;
     public JButton retryRetrieve;
     private JPanel tripsPanel;
-    private final JPanel containerPanel;
-    private JScrollPane scrollPane;
 
     public TimetableView(Station station) {
-        this.station = station;
-
-        setBounds(100, 100, 1000, 500);
+        setBounds(100, 100, 1000, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("Bahnhofstafel — " + station.getName());
 
-        containerPanel = new JPanel(new BorderLayout());
+        JPanel containerPanel = new JPanel(new BorderLayout());
         containerPanel.setBackground(DB_BLUE_PRIMARY_COLOR);
-        containerPanel.setBorder(BorderFactory.createEmptyBorder(40, 40, 20, 20));
+        containerPanel.setBorder(BorderFactory.createEmptyBorder(10, 40, 20, 20));
         getContentPane().add(containerPanel);
 
-        tripsPanel = new ContentWrapperPanel(BoxLayout.Y_AXIS, BorderLayout.NORTH);
-        tripsPanel.setOpaque(false);
+        JPanel headerPanel = new JPanel();
+        headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
+        headerPanel.setOpaque(false);
 
-        JLabel departurePlannedTime = new JLabel("Loading...");
-        departurePlannedTime.setForeground(Color.white);
+        TimetableWindowHeader windowHeader = new TimetableWindowHeader();
+        headerPanel.add(windowHeader);
+
+        TableHeader tableHeader = new TableHeader();
+        headerPanel.add(tableHeader);
+
+        containerPanel.add(headerPanel, BorderLayout.NORTH);
+
+        tripsPanel = new JPanel(new BorderLayout());
+        tripsPanel.setOpaque(false);
         tripsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        departurePlannedTime.setFont(new Font("D-DIN", Font.BOLD, 28));
-        tripsPanel.add(departurePlannedTime);
 
         retryRetrieve = new JButton("Retry");
         tripsPanel.add(retryRetrieve);
 
-        scrollPane = new JScrollPane(tripsPanel,
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane = new JScrollPane(tripsPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setOpaque(false);
         scrollPane.getViewport().setOpaque(false);
         scrollPane.setBorder(null);
 
-        containerPanel.add(scrollPane);
+        containerPanel.add(scrollPane, BorderLayout.CENTER);
     }
 
     public void updateTrips(List<Trip> newTrips) {
-        tripsPanel = new ContentWrapperPanel(BoxLayout.Y_AXIS,BorderLayout.NORTH);
+        tripsPanel = new ContentWrapperPanel(BoxLayout.Y_AXIS, BorderLayout.NORTH);
         tripsPanel.setOpaque(false);
 
         for (Trip trip : newTrips) {

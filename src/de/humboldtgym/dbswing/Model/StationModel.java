@@ -6,12 +6,6 @@ import org.json.JSONObject;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -48,6 +42,7 @@ public class StationModel {
             }
         }).exceptionally(ex -> {
             ex.printStackTrace();
+            System.err.println("Erfolglose Server-Anfrage");
             return null;
         });
     }

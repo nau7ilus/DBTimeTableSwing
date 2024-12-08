@@ -13,9 +13,9 @@ import java.awt.event.ActionListener;
 import java.util.Arrays;
 
 public class SearchController {
-    private WindowChangeListener windowChangeListener;
     private final StationModel model;
     private final SearchView view;
+    private WindowChangeListener windowChangeListener;
 
     public SearchController(StationModel model, SearchView view) {
         this.model = model;

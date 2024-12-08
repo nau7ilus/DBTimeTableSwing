@@ -2,7 +2,6 @@ package de.humboldtgym.dbswing.Model;
 
 import org.json.JSONObject;
 
-import java.time.Instant;
 import java.util.Date;
 
 public class Station {
@@ -17,6 +16,19 @@ public class Station {
         this.name = name;
     }
 
+    public static Station parseJSONObject(JSONObject obj) {
+        String id = obj.getString("id");
+        String name = obj.getString("name");
+
+        Station station = new Station(id, name);
+
+        JSONObject products = obj.getJSONObject("products");
+        station.hasNationalExpress = products.getBoolean("nationalExpress");
+        station.hasRegionalExpress = products.getBoolean("regionalExp");
+
+        return station;
+    }
+
     public String getId() {
         return id;
     }
@@ -29,6 +41,10 @@ public class Station {
         return this.departure;
     }
 
+    public void setDeparture(Date departure) {
+        this.departure = departure;
+    }
+
     public boolean hasNationalExpress() {
         return hasNationalExpress;
     }
@@ -37,25 +53,8 @@ public class Station {
         return hasRegionalExpress;
     }
 
-    public void setDeparture(Date departure) {
-        this.departure = departure;
-    }
-
     @Override
     public String toString() {
         return this.name;
-    }
-
-    public static Station parseJSONObject(JSONObject obj) {
-        String id = obj.getString("id");
-        String name = obj.getString("name");
-
-        Station station = new Station(id, name);
-
-        JSONObject products = obj.getJSONObject("products");
-        station.hasNationalExpress = products.getBoolean("nationalExpress");
-        station.hasRegionalExpress = products.getBoolean("regionalExp");
-
-        return station;
     }
 }

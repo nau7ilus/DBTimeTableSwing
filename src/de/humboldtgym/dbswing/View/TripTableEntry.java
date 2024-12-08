@@ -1,47 +1,29 @@
 package de.humboldtgym.dbswing.View;
 
 import de.humboldtgym.dbswing.ContentWrapperPanel;
+import de.humboldtgym.dbswing.MarqueeLabel;
 import de.humboldtgym.dbswing.Model.Line;
 import de.humboldtgym.dbswing.Model.Trip;
 
 import javax.swing.*;
-import javax.swing.border.MatteBorder;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.util.List;
 
 import static de.humboldtgym.dbswing.Constants.DB_BLUE_PRIMARY_COLOR;
 
-public class TripTableEntry extends JPanel {
+public class TripTableEntry extends TimetableEntryAbstract {
     private final Trip trip;
-    private final GridBagConstraints gbc = new GridBagConstraints();
 
     public TripTableEntry(Trip trip) {
+        super();
         this.trip = trip;
-        setOpaque(false);
-        setLayout(new GridBagLayout());
-
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.insets = new Insets(15, 10, 15, 10);
-
-        addTimeAndTrain();
-        addViaDest();
-        addTrack();
-
-        gbc.weightx = 0.3;
-        gbc.gridx = 3;
-        add(new JLabel("Column 4 (1fr)"), gbc);
-
-        setBorder(new MatteBorder(0, 0, 1, 0, new Color(0x99AABB)));
+        this.init();
     }
 
-    private void addTimeAndTrain() {
-        gbc.gridx = 0;
-        gbc.gridwidth = 1;
-        gbc.weightx = 0;
-        gbc.weighty = 1;
-
-        ContentWrapperPanel panel = new ContentWrapperPanel(BoxLayout.Y_AXIS, BorderLayout.SOUTH);
-        panel.setOpaque(false);
-        panel.setPreferredSize(new Dimension(115, 50));
+    @Override
+    protected JPanel addTimeAndTrain() {
+        JPanel panel = getTimeAndTrainContainer();
 
         Line line = trip.getLine();
         JLabel trainNumberLabel = new JLabel(line.getName() + " / " + line.getId());
@@ -69,22 +51,18 @@ public class TripTableEntry extends JPanel {
         }
 
         panel.add(timePanel);
-        add(panel, gbc);
+        return panel;
     }
 
-    private void addViaDest() {
-        gbc.gridx = 1;
-
-        ContentWrapperPanel panel = new ContentWrapperPanel(BoxLayout.Y_AXIS, BorderLayout.SOUTH);
-        panel.setPreferredSize(new Dimension(400, 60));
-        panel.setMaximumSize(new Dimension(400, 60));
-        panel.setOpaque(false);
+    @Override
+    protected JPanel addViaDest() {
+        JPanel panel = getViaDestContainer();
 
         JLabel viaLabel = new JLabel(trip.getRelevantStopoverNames());
         viaLabel.setForeground(Color.white);
         viaLabel.setFont(new Font("D-DIN", Font.PLAIN, 16));
         viaLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        viaLabel.setMaximumSize(new Dimension(400, 60));
+        viaLabel.setMaximumSize(getViaDestDimension());
 
         panel.add(viaLabel);
 
@@ -96,20 +74,16 @@ public class TripTableEntry extends JPanel {
         destinationLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         panel.add(destinationLabel);
 
-        add(panel, gbc);
+        return panel;
     }
 
-    private void addTrack() {
-        gbc.gridx = 2;
-        gbc.weightx = 0.3;
-
-        ContentWrapperPanel containerPanel = new ContentWrapperPanel(BoxLayout.X_AXIS, BorderLayout.SOUTH);
-        containerPanel.setPreferredSize(new Dimension(0, 60));
-        containerPanel.setMaximumSize(new Dimension(100, 60));
-        containerPanel.setOpaque(false);
+    @Override
+    protected JPanel addTrack() {
+        JPanel containerPanel = getTrackContainer(BoxLayout.X_AXIS);
 
         ContentWrapperPanel panel = new ContentWrapperPanel(BoxLayout.X_AXIS, BorderLayout.WEST);
         panel.setOpaque(false);
+        panel.setBorder(new EmptyBorder(0, 0, 10, 0));
 
         boolean isChanged = !trip.getPlatform().isEmpty() && !trip.getPlatform().equals(trip.getPlannedPlatform());
         String track = isChanged ? "<html><s>" + trip.getPlannedPlatform() + "</s></html>" : trip.getPlannedPlatform();
@@ -130,7 +104,22 @@ public class TripTableEntry extends JPanel {
         }
 
         containerPanel.add(panel);
+        return containerPanel;
+    }
 
-        add(containerPanel, gbc);
+    @Override
+    protected JPanel addRemarks() {
+        JPanel panel = getRemarksContainer();
+
+        List<String> remarks = trip.getRemarks();
+        if (!remarks.isEmpty()) {
+            String joinedRemarks = String.join(" +++ ", remarks);
+            MarqueeLabel marqueeLabel = new MarqueeLabel(joinedRemarks, 2);
+            marqueeLabel.setFont(new Font("D-DIN", Font.PLAIN, 27));
+            marqueeLabel.setForeground(DB_BLUE_PRIMARY_COLOR);
+            panel.add(marqueeLabel);
+        }
+
+        return panel;
     }
 }

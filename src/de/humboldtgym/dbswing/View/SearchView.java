@@ -2,7 +2,6 @@ package de.humboldtgym.dbswing.View;
 
 import de.humboldtgym.dbswing.FancyTextField;
 import de.humboldtgym.dbswing.Model.Station;
-import de.humboldtgym.dbswing.WindowChangeListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +23,7 @@ public class SearchView extends JFrame {
         containerPanel.setBorder(BorderFactory.createEmptyBorder(40, 40, 20, 20));
         getContentPane().add(containerPanel);
 
-        searchPanel =  new SearchPanel();
+        searchPanel = new SearchPanel();
         searchPanel.setPreferredSize(new Dimension(400, 350));
         containerPanel.add(searchPanel);
 

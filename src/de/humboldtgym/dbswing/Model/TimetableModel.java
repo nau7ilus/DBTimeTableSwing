@@ -17,7 +17,7 @@ import static de.humboldtgym.dbswing.Constants.*;
 public class TimetableModel {
     private final List<Trip> trips = new ArrayList<>();
     private final Station currentStation;
-private final List<ChangeListener> listeners = new ArrayList<>();
+    private final List<ChangeListener> listeners = new ArrayList<>();
 
     public TimetableModel(Station station) {
         this.currentStation = station;
@@ -27,7 +27,9 @@ private final List<ChangeListener> listeners = new ArrayList<>();
         listeners.add(listener);
     }
 
-    public List<Trip> getTrips() { return this.trips; }
+    public List<Trip> getTrips() {
+        return this.trips;
+    }
 
     public void setTrips(List<Trip> newTrips) {
         trips.clear();
@@ -47,15 +49,13 @@ private final List<ChangeListener> listeners = new ArrayList<>();
                 futures.add(this.loadTripInfo(trip));
             }
 
-            CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
-                    .thenRun(() -> {
-                        setTrips(trips);
-                    })
-                    .exceptionally(ex -> {
-                        System.err.println("Fehler beim Abruf der Abfahrten: " + ex);
-                        ex.printStackTrace();
-                        return null;
-                    });
+            CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).thenRun(() -> {
+                setTrips(trips);
+            }).exceptionally(ex -> {
+                System.err.println("Fehler beim Abruf der Abfahrten: " + ex);
+                ex.printStackTrace();
+                return null;
+            });
         }).exceptionally(ex -> {
             System.err.println("Fehler beim Abruf der Abfahrten: " + ex);
             ex.printStackTrace();

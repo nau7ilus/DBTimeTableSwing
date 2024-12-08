@@ -13,7 +13,7 @@ public class MarqueeLabel extends JPanel {
         this.text = text;
         this.speed = speed;
         this.x = 0;
-        
+
         Timer timer = new Timer(20, e -> updateMarquee());
         timer.start();
     }

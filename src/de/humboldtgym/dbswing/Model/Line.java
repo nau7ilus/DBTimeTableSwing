@@ -8,6 +8,16 @@ public class Line {
     private String productName;
     private String operatorName;
 
+    public static Line parseJSONObject(JSONObject obj) {
+        Line line = new Line();
+        line.id = obj.getString("fahrtNr");
+        line.name = obj.getString("name");
+        line.productName = obj.getString("productName");
+        JSONObject operatorObject = obj.getJSONObject("operator");
+        line.operatorName = operatorObject.getString("name");
+        return line;
+    }
+
     public String getId() {
         return this.id;
     }
@@ -22,15 +32,5 @@ public class Line {
 
     public String getOperatorName() {
         return this.operatorName;
-    }
-
-    public static Line parseJSONObject(JSONObject obj) {
-        Line line = new Line();
-        line.id = obj.getString("fahrtNr");
-        line.name = obj.getString("name");
-        line.productName = obj.getString("productName");
-        JSONObject operatorObject = obj.getJSONObject("operator");
-        line.operatorName = operatorObject.getString("name");
-        return line;
     }
 }

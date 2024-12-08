@@ -61,7 +61,7 @@ public class SearchResultsPanel extends JPanel {
         return this.resultsList;
     }
 
-    public JButton getSubmitButton(){
+    public JButton getSubmitButton() {
         return this.submitButton;
     }
 }
