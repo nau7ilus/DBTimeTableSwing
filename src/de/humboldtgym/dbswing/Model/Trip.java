@@ -1,9 +1,11 @@
 package de.humboldtgym.dbswing.Model;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +21,7 @@ public class Trip {
     private boolean cancelled;
     private List<Station> stopovers;
     private Line line;
+    private List<String> remarks;
 
     public Trip(String id) {
         this.id = id;
@@ -38,6 +41,14 @@ public class Trip {
         trip.destination = Station.parseJSONObject(jsonObject.getJSONObject("destination"));
         trip.cancelled = jsonObject.optBoolean("cancelled", false);
         trip.line = Line.parseJSONObject(jsonObject.getJSONObject("line"));
+
+        List<String> remarks = new ArrayList<>();
+        JSONArray remarksRaw = jsonObject.getJSONArray("remarks");
+        for (int i = 0; i < remarksRaw.length(); i++) {
+            JSONObject remarkRawJSONObject = remarksRaw.getJSONObject(i);
+            remarks.add(remarkRawJSONObject.getString("text"));
+        }
+        trip.remarks = remarks;
 
         return trip;
     }
@@ -73,6 +84,10 @@ public class Trip {
         return this.whenPlanned;
     }
 
+    public List<String> getRemarks() {
+        return remarks;
+    }
+
     public String getFormattedWhenPlanned() {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         if (whenPlanned.toString().isEmpty()) return null;
@@ -83,7 +98,7 @@ public class Trip {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
             return sdf.format(this.when);
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             return "";
         }
     }
