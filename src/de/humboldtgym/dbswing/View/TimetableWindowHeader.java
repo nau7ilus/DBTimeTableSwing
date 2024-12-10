@@ -4,6 +4,8 @@ import de.humboldtgym.dbswing.Constants;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class TimetableWindowHeader extends TimetableEntryAbstract {
     public TimetableWindowHeader() {
@@ -11,14 +13,25 @@ public class TimetableWindowHeader extends TimetableEntryAbstract {
         this.init();
     }
 
+
+    private static String getFormattedTime() {
+        return LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
+    }
+
     @Override
     protected JPanel addTimeAndTrain() {
         JPanel panel = getTimeAndTrainContainer();
 
-        JLabel currentTimeLabel = new JLabel("13:41");
+        JLabel currentTimeLabel = new JLabel(getFormattedTime());
         currentTimeLabel.setForeground(Color.white);
         currentTimeLabel.setFont(new Font("D-DIN", Font.BOLD, 35));
         panel.add(currentTimeLabel);
+
+        Timer timer = new Timer(1000 ,e -> {
+            currentTimeLabel.setText(getFormattedTime());
+        });
+
+        timer.start();
 
         return panel;
     }
