@@ -19,6 +19,17 @@ public class TripTableEntry extends TimetableEntryAbstract {
         super();
         this.trip = trip;
         this.init();
+
+        this.setOpaque(true);
+        this.setBackground(this.getBackgroundColor());
+    }
+
+    private Color getBackgroundColor() {
+        return trip.isCancelled() ? Color.white : DB_BLUE_PRIMARY_COLOR;
+    }
+
+    private Color getForegroundColor() {
+        return trip.isCancelled() ? DB_BLUE_PRIMARY_COLOR : Color.white;
     }
 
     @Override
@@ -27,7 +38,7 @@ public class TripTableEntry extends TimetableEntryAbstract {
 
         Line line = trip.getLine();
         JLabel trainNumberLabel = new JLabel(line.getName() + " / " + line.getId());
-        trainNumberLabel.setForeground(Color.white);
+        trainNumberLabel.setForeground(this.getForegroundColor());
         trainNumberLabel.setFont(new Font("D-DIN", Font.PLAIN, 18));
         panel.add(trainNumberLabel);
 
@@ -36,7 +47,7 @@ public class TripTableEntry extends TimetableEntryAbstract {
         timePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JLabel departureTimeLabel = new JLabel(trip.getFormattedWhenPlanned());
-        departureTimeLabel.setForeground(Color.white);
+        departureTimeLabel.setForeground(this.getForegroundColor());
         departureTimeLabel.setFont(new Font("D-DIN", Font.BOLD, 29));
         timePanel.add(departureTimeLabel);
 
@@ -59,7 +70,7 @@ public class TripTableEntry extends TimetableEntryAbstract {
         JPanel panel = getViaDestContainer();
 
         JLabel viaLabel = new JLabel(trip.getRelevantStopoverNames());
-        viaLabel.setForeground(Color.white);
+        viaLabel.setForeground(this.getForegroundColor());
         viaLabel.setFont(new Font("D-DIN", Font.PLAIN, 16));
         viaLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         viaLabel.setMaximumSize(getViaDestDimension());
@@ -69,7 +80,7 @@ public class TripTableEntry extends TimetableEntryAbstract {
         panel.add(Box.createVerticalStrut(5));
 
         JLabel destinationLabel = new JLabel(trip.getDestination().getName());
-        destinationLabel.setForeground(Color.white);
+        destinationLabel.setForeground(this.getForegroundColor());
         destinationLabel.setFont(new Font("D-DIN", Font.BOLD, 29));
         destinationLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         panel.add(destinationLabel);
@@ -89,7 +100,7 @@ public class TripTableEntry extends TimetableEntryAbstract {
         String track = isChanged ? "<html><s>" + trip.getPlannedPlatform() + "</s></html>" : trip.getPlannedPlatform();
 
         JLabel trackLabel = new JLabel(track);
-        trackLabel.setForeground(Color.white);
+        trackLabel.setForeground(this.getForegroundColor());
         trackLabel.setFont(new Font("D-DIN", Font.BOLD, 29));
         panel.add(trackLabel);
 
