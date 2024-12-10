@@ -53,11 +53,10 @@ public class TimetableModel {
     }
 
     public void loadTrips() {
-        String requestEndpoint = API_TRIPS + RESTHelper.encodeQuery(this.currentStation.getId()) + API_TRIPS_QUERY;
+        int maxRetries = 5;
+        long retryDelay = 2000;
 
-        RESTHelper.get(requestEndpoint).thenAccept(response -> {
-            List<Trip> trips = this.parseTrips(response);
-
+        retryLoadTrips(API_TRIPS + RESTHelper.encodeQuery(this.currentStation.getId()) + API_TRIPS_QUERY, maxRetries, retryDelay).thenAccept(trips -> {
             List<CompletableFuture<Void>> futures = new ArrayList<>();
 
             for (Trip trip : trips) {
@@ -71,11 +70,43 @@ public class TimetableModel {
                 ex.printStackTrace();
                 return null;
             });
-        }).exceptionally(ex -> {
-            System.err.println("Fehler beim Abruf der Abfahrten: " + ex);
-            ex.printStackTrace();
-            return null;
         });
+    }
+
+    private CompletableFuture<List<Trip>> retryLoadTrips(String endpoint, int maxRetries, long retryDelay) {
+        CompletableFuture<List<Trip>> future = new CompletableFuture<>();
+
+        attemptLoadTrips(endpoint, 0, maxRetries, retryDelay, future);
+
+        return future;
+    }
+
+    private void attemptLoadTrips(String endpoint, int attempt, int maxRetries, long retryDelay, CompletableFuture<List<Trip>> future) {
+        RESTHelper.get(endpoint).thenApply(this::parseTrips).thenAccept(future::complete)
+                .exceptionally(ex -> {
+                    if (isServerError(ex) && attempt < maxRetries - 1) {
+                        System.err.println("Fehler beim Abruf der Abfahrten (Versuch " + (attempt + 1) + "): " + ex);
+                        scheduleRetry(endpoint, attempt + 1, maxRetries, retryDelay, future);
+                    } else {
+                        future.completeExceptionally(ex);
+                    }
+                    return null;
+                });
+    }
+
+    private void scheduleRetry(String endpoint, int attempt, int maxRetries, long retryDelay, CompletableFuture<List<Trip>> future) {
+        CompletableFuture.runAsync(() -> {
+            try {
+                Thread.sleep(retryDelay);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                future.completeExceptionally(e);
+            }
+        }).thenRun(() -> attemptLoadTrips(endpoint, attempt, maxRetries, retryDelay, future));
+    }
+
+    private boolean isServerError(Throwable ex) {
+        return ex.getMessage().contains("502");
     }
 
     public CompletableFuture<Void> loadTripInfo(Trip trip) {
@@ -112,8 +143,6 @@ public class TimetableModel {
     private List<Trip> parseTrips(String response) {
         List<Trip> trips = new ArrayList<>();
         JSONArray departuresArray = new JSONArray(response);
-//        JSONObject jsonObject = new JSONObject(response);
-//        JSONArray departuresArray = jsonObject.getJSONArray("departures");
         for (int i = 0; i < departuresArray.length(); i++) {
             JSONObject tripObj = departuresArray.getJSONObject(i);
             trips.add(Trip.parseJSONObject(tripObj));
