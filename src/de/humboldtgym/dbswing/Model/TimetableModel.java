@@ -4,6 +4,7 @@ import de.humboldtgym.dbswing.RESTHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.time.Instant;
@@ -19,9 +20,21 @@ public class TimetableModel {
     private final List<Trip> trips = new ArrayList<>();
     private final Station currentStation;
     private final List<ChangeListener> listeners = new ArrayList<>();
+    private final Timer updateTimer;
 
     public TimetableModel(Station station) {
         this.currentStation = station;
+
+        updateTimer = new Timer(30 * 1000, e -> {
+            this.loadTrips();
+            System.out.println("Update");
+        });
+
+        updateTimer.start();
+    }
+
+    public void stopUpdating() {
+        updateTimer.stop();
     }
 
     public void addChangeListener(ChangeListener listener) {
