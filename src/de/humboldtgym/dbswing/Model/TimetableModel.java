@@ -8,6 +8,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -33,6 +34,7 @@ public class TimetableModel {
 
     public void setTrips(List<Trip> newTrips) {
         trips.clear();
+        newTrips.sort(Comparator.comparing(Trip::getWhenPlanned));
         trips.addAll(newTrips);
         notifyListeners();
     }
