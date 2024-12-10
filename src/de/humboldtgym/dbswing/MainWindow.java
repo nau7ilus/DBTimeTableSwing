@@ -66,6 +66,7 @@ public class MainWindow implements WindowChangeListener {
         timetableView.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
+                timetableModel.stopUpdating();
                 searchView.setVisible(true);
             }
         });
