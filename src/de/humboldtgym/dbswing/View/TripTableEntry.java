@@ -126,6 +126,7 @@ public class TripTableEntry extends TimetableEntryAbstract {
         if (!remarks.isEmpty()) {
             String joinedRemarks = String.join(" +++ ", remarks);
             MarqueeLabel marqueeLabel = new MarqueeLabel(joinedRemarks, 2);
+            marqueeLabel.setBackground(Color.white);
             marqueeLabel.setFont(new Font("D-DIN", Font.PLAIN, 27));
             marqueeLabel.setForeground(DB_BLUE_PRIMARY_COLOR);
             panel.add(marqueeLabel);
