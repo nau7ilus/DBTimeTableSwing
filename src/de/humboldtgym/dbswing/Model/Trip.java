@@ -62,7 +62,7 @@ public class Trip {
     }
 
     public String getRelevantStopoverNames() {
-        if (stopovers == null) return "123";
+        if (stopovers == null) return "...";
 //       List<Station> filteredStopovers = this.stopovers.stream().filter((so) -> {
 //            boolean isEligibleProduct = so.hasNationalExpress() || so.hasRegionalExpress();
 //            // TODO: Ignore all station before current
