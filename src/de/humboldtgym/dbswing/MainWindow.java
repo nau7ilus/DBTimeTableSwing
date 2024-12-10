@@ -10,6 +10,8 @@ import de.humboldtgym.dbswing.View.TimetableView;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +22,6 @@ import java.util.Objects;
 
 public class MainWindow implements WindowChangeListener {
 
-    private TimetableView timetableView;
     private SearchView searchView;
 
     public MainWindow() {
@@ -40,20 +41,34 @@ public class MainWindow implements WindowChangeListener {
 
     private void initialize() {
         this.usingCustomFonts();
+        this.openSearchWindow();
+    }
+
+    private void openSearchWindow() {
         searchView = new SearchView();
+        searchView.setLocationRelativeTo(null);
+
         StationModel stationModel = new StationModel();
         SearchController searchController = new SearchController(stationModel, searchView);
         searchController.setWindowChangeListener(this);
-
     }
 
     public void openTimetableWindow(Station station) {
         searchView.setVisible(false);
-        timetableView = new TimetableView(station);
+        TimetableView timetableView = new TimetableView(station);
         TimetableModel timetableModel = new TimetableModel(station);
         new TimetableController(timetableModel, timetableView);
         timetableModel.loadTrips();
         timetableView.setVisible(true);
+
+        timetableView.setLocationRelativeTo(null);
+        timetableView.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        timetableView.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                searchView.setVisible(true);
+            }
+        });
     }
 
     private void usingCustomFonts() {
@@ -82,7 +97,6 @@ public class MainWindow implements WindowChangeListener {
             JOptionPane.showMessageDialog(null, exception.getMessage());
         }
     }
-
 
     @Override
     public void onWindowChangeRequested(Station station) {
